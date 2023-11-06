@@ -8,27 +8,28 @@ from flight_types import *
 
 import requests
 
-parser = argparse.ArgumentParser(
-    description="Check if you can make a tight layover")
-parser.add_argument(
-    "flight_code_leg_1",
-    type=str,
-    help="flight code of the first leg of the journey",
-    metavar="flight_code_leg_1",
-    nargs=1,
-)
-parser.add_argument(
-    "flight_code_leg_2",
-    type=str,
-    help="flight code of the second leg of the journey",
-    metavar="flight_code_leg_2",
-    nargs=1,
-)
 
-args = parser.parse_args()
-FLIGHT_CODE_LEG_1 = args.flight_code_leg_1[0]
-FLIGHT_CODE_LEG_2 = args.flight_code_leg_2[0]
 BASE_URL = "https://flightaware.com"
+
+
+def setup_parser():
+    parser = argparse.ArgumentParser(
+        description="Check if you can make a tight layover")
+    parser.add_argument(
+        "flight_code_leg_1",
+        type=str,
+        help="flight code of the first leg of the journey",
+        metavar="flight_code_leg_1",
+        nargs=1,
+    )
+    parser.add_argument(
+        "flight_code_leg_2",
+        type=str,
+        help="flight code of the second leg of the journey",
+        metavar="flight_code_leg_2",
+        nargs=1,
+    )
+    return parser
 
 
 def get_flight_info(flight_code: str):
@@ -117,31 +118,37 @@ def get_airport_info(flight_info, arr_or_dest="destination") -> Airport:
     )
 
 
-leg_1_info = get_flight_info(FLIGHT_CODE_LEG_1)
-leg_2_info = get_flight_info(FLIGHT_CODE_LEG_2)
+if __name__ == '__main__':
+    parser = setup_parser()
+    args = parser.parse_args()
+    FLIGHT_CODE_LEG_1 = args.flight_code_leg_1[0]
+    FLIGHT_CODE_LEG_2 = args.flight_code_leg_2[0]
 
-print("Leg 1:")
-print_flight_info(leg_1_info)
-print("Leg 2:")
-print_flight_info(leg_2_info)
+    leg_1_info = get_flight_info(FLIGHT_CODE_LEG_1)
+    leg_2_info = get_flight_info(FLIGHT_CODE_LEG_2)
 
-# with open(FLIGHT_CODE_LEG_1 + ".json", "w") as f:
-#     json.dump(leg_1_info, f, indent=4, sort_keys=True)
+    print("Leg 1:")
+    print_flight_info(leg_1_info)
+    print("Leg 2:")
+    print_flight_info(leg_2_info)
 
-# with open(FLIGHT_CODE_LEG_2 + ".json", "w") as f:
-#     json.dump(leg_2_info, f, indent=4, sort_keys=True)
+    # with open(FLIGHT_CODE_LEG_1 + ".json", "w") as f:
+    #     json.dump(leg_1_info, f, indent=4, sort_keys=True)
 
-connection_times = get_connection_times(leg_1_info, leg_2_info)
-print("Connection stats over the last {} flights:".format(len(connection_times)))
-print("Avg. connection time: {:.2f} hours".format(
-    functools.reduce(lambda acc, x: acc + x.length_sec(), connection_times, 0) / len(connection_times) / (60 * 60)))
-# for connection in connection_times:
-#     print(connection.length_sec())
-print("Avg. delay of leg 1: {:.2f} hours".format(
-    functools.reduce(lambda acc, x: acc + x.start.delay_sec(), connection_times, 0) / len(connection_times) / (60 * 60)))
-# for connection in connection_times:
-#     print(connection.start.delay_sec())
-print("Avg. delay of leg 2: {:.2f} hours".format(
-    functools.reduce(lambda acc, x: acc + x.end.delay_sec(), connection_times, 0) / len(connection_times) / (60 * 60)))
-# for connection in connection_times:
-#     print(connection.end.delay_sec())
+    # with open(FLIGHT_CODE_LEG_2 + ".json", "w") as f:
+    #     json.dump(leg_2_info, f, indent=4, sort_keys=True)
+
+    connection_times = get_connection_times(leg_1_info, leg_2_info)
+    print("Connection stats over the last {} flights:".format(len(connection_times)))
+    print("Avg. connection time: {:.2f} hours".format(
+        functools.reduce(lambda acc, x: acc + x.length_sec(), connection_times, 0) / len(connection_times) / (60 * 60)))
+    # for connection in connection_times:
+    #     print(connection.length_sec())
+    print("Avg. delay of leg 1: {:.2f} hours".format(
+        functools.reduce(lambda acc, x: acc + x.start.delay_sec(), connection_times, 0) / len(connection_times) / (60 * 60)))
+    # for connection in connection_times:
+    #     print(connection.start.delay_sec())
+    print("Avg. delay of leg 2: {:.2f} hours".format(
+        functools.reduce(lambda acc, x: acc + x.end.delay_sec(), connection_times, 0) / len(connection_times) / (60 * 60)))
+    # for connection in connection_times:
+    #     print(connection.end.delay_sec())
