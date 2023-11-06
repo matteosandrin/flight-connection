@@ -1,0 +1,5 @@
+*.html
+*.json
+graveyard
+.vscode
+__pycache__
