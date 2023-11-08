@@ -9,9 +9,9 @@ curr_dir = os.path.dirname(os.path.abspath(__file__))
 FILE_PATH = os.path.join(curr_dir, "airline_codes.json")
 
 
-def get_airline_codes(write_to_file=False):
-    if os.path.exists(FILE_PATH):
-        return json.load(open(FILE_PATH))
+def get_airline_codes(write_to_file=False, airline_file_path=FILE_PATH):
+    if os.path.exists(airline_file_path):
+        return json.load(open(airline_file_path))
     page = requests.get(AIRLINE_CODES_LIST_URL)
     if page.status_code != 200:
         print("ERROR: failed to get airline code list")
