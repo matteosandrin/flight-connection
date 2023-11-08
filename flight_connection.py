@@ -5,6 +5,7 @@ import re
 import functools
 from typing import List
 from flight_types import *
+import flight_codes
 
 import requests
 
@@ -43,6 +44,7 @@ def get_flight_info(flight_code: str):
     # if re.match(r"([A-Z]{2}|[A-Z]\d|\d[A-Z])\s?\d{3,4}", flight_code) is None:
     #     print("ERROR: {} is not a flight code".format(flight_code))
     #     exit(1)
+    flight_code = flight_codes.iata_to_icao_flight(flight_code)
     flight_page_url = BASE_URL + "/live/flight/" + flight_code
     flight_page = requests.get(flight_page_url)
     if flight_page.status_code != 200:
