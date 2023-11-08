@@ -71,6 +71,7 @@ def iata_to_icao_flight(flight_code: str) -> str:
     flight_code = strip_code(flight_code)
     if re.match("^([A-Z][\d]|[\d][A-Z]|[A-Z]{2}|[A-Z]{3})([\d]{2,4})$", flight_code) is None:
         print("ERROR: invalid flight code {}".format(flight_code))
+        return None
     if is_icao_airline(flight_code[:3]):
         # the airline code is ICAO
         return flight_code
